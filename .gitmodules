@@ -1,0 +1,3 @@
+[submodule "lib/angular-components"]
+	path = lib/angular-components
+	url = https://github.com/UtopikGoodies/angular-components.git

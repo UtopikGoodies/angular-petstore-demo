@@ -1,0 +1,19 @@
+<mat-toolbar>
+    <button mat-fab color="primary" class="button-home" [routerLink]="''">
+        <mat-icon>store</mat-icon>
+    </button>
+
+    <button mat-button [matMenuTriggerFor]="storeMenu">Store</button>
+    <mat-menu #storeMenu="matMenu">
+        <button mat-menu-item [routerLink]="['store','inventory']">Inventory</button>
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="patMenu">Pet</button>
+    <mat-menu #patMenu="matMenu">
+        <button mat-menu-item [routerLink]="['pet','create']">Create</button>
+        <button mat-menu-item [routerLink]="['pet','status']">Status</button>
+        <button mat-menu-item [routerLink]="['pet','tags']">Tags</button>
+    </mat-menu>
+
+</mat-toolbar>
+<router-outlet></router-outlet>
