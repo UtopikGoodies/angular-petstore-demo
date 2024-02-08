@@ -5,6 +5,7 @@ import { StoreInventoryComponent } from './store/store-inventory/store-inventory
 import { PetStatusComponent } from './pet/pet-status/pet-status.component';
 import { PetTagsComponent } from './pet/pet-tags/pet-tags.component';
 import { PetCreateComponent } from './pet/pet-create/pet-create.component';
+import { PetReadComponent } from './pet/pet-read/pet-read.component';
 
 export const routes: Routes = [
   {
@@ -47,6 +48,10 @@ export const routes: Routes = [
       {
         path: 'tags',
         component: PetTagsComponent,
+      },
+      {
+        path: ':id',
+        component: PetReadComponent
       },
     ],
   },

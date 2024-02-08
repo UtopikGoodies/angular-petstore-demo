@@ -1,21 +1,2 @@
-<h1 mat-dialog-title class="dialog-title">{{ pageTitle }}</h1>
-<div mat-dialog-content class="dialog-content">
-  <!-- <lib-dynamic-form
-    #dynamicFormComponent
-    [dynFormFields]="data.formFields"
-    [disabled]="isFormDisabled"
-    (valueChanges)="receiveFormFieldValue($event)"
-    (statusChanges)="receiveFormControlStatus($event)"
-  ></lib-dynamic-form> -->
-  <app-form-pet-cru></app-form-pet-cru>
-</div>
-<div mat-dialog-actions align="end" class="dialog-actions">
-  <button
-    mat-button
-    class="dialog-action-button"
-    [disabled]="isButtonActionDisabled"
-    (click)="create()"
-  >
-    Create
-  </button>
-</div>
+<h1 class="title">{{ pageTitle }}</h1>
+<app-form-pet-cru></app-form-pet-cru>
