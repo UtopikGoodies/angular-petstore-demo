@@ -26,153 +26,196 @@ export class FormPetCruComponent implements OnInit {
   pet!: Pet;
   formFields!: AbstractFormField[];
 
-  formFieldsEmpty: AbstractFormField[] = [
-    new FormFieldInput<number>({
-      name: 'id',
-      title: 'id',
-      required: true,
-      hidden: true,
-      value: this.getRandomInt(1, 10000),
-    }),
-    new FormFieldInput<string>({
-      name: 'name',
-      title: 'Name',
-      required: true,
-      value: '',
-    }),
-    new FormfieldObject({
-      name: 'category',
-      title: 'Category',
-      formFields: [
-        new FormFieldInput<number>({
-          name: 'id',
-          title: 'id',
-          required: true,
-          hidden: true,
-          value: this.getRandomInt(1, 10000),
-        }),
-        new FormFieldInput<string>({
-          name: 'name',
-          title: 'Name',
-          required: true,
-          value: '',
-        }),
-      ],
-    }),
-    new FormFieldArray({
-      name: 'photoUrls',
-      title: 'Photo Urls',
-      uniqueValue: true,
-      formField: new FormFieldInput<string>({
-        name: 'photoUrl',
-        title: 'Photo Url',
-        required: true,
-        value: '',
-      }),
-    }),
-    new FormFieldArray({
-      name: 'tags',
-      title: 'Tags',
-      uniqueValue: true,
-      formField: new FormfieldObject({
-        name: 'tag',
-        title: 'Tag',
-        formFields: [
-          new FormFieldInput<number>({
-            name: 'id',
-            title: 'id',
-            required: true,
-            hidden: true,
-            value: this.getRandomInt(1, 10000),
-          }),
-          new FormFieldInput<string>({
-            name: 'name',
-            title: 'Name',
-            required: true,
-            value: '',
-          }),
-        ],
-      }),
-    }),
-    new FormFieldSelect<string>({
-      name: 'status',
-      title: 'Status',
-      required: true,
-      options: [
-        { value: 'available', viewValue: 'Available' },
-        { value: 'pending', viewValue: 'Pending' },
-        { value: 'sold', viewValue: 'Sold' },
-      ],
-    }),
-  ];
-
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) {
+    // this.formFields = this.generateFormField(this.pet);
+  }
 
   ngOnInit(): void {
     if (this.petId) {
-      this.formFields = this.formFieldsEmpty;
       this.apiService.petService.getPetById(this.petId).subscribe({
         next: (value) => {
           this.pet = value;
+          this.formFields = this.generateFormField(this.pet);
         },
         error: (err) => console.error(err),
       });
     } else {
-      this.formFields = this.formFieldsEmpty;
+      // this.formFields = this.generateFormField(this.pet);
     }
   }
 
-  setformFields(pet: Pet): AbstractFormField[] {
-    let photoUrls
-
-
-    let formFields: AbstractFormField[] = [
-      new FormFieldInput<number | undefined>({
-        name: 'id',
-        title: 'id',
-        required: true,
-        value: pet.id,
-      }),
-      new FormFieldInput<string>({
-        name: 'name',
-        title: 'Name',
-        required: true,
-        value: pet.name,
-      }),
-      new FormfieldObject({
-        name: 'category',
-        title: 'Category',
-        formFields: [
-          new FormFieldInput<number | undefined>({
-            name: 'id',
-            title: 'id',
-            required: true,
-            hidden: true,
-            value: pet.category?.id,
-          }),
-          new FormFieldInput<string | undefined>({
-            name: 'name',
-            title: 'Name',
-            required: true,
-            value: pet.category?.name,
-          }),
-        ],
-      }),
-      new FormFieldArray({ //TODO: Should be a list
-        name: 'photoUrls',
-        title: 'Photo Urls',
-        uniqueValue: true,
-        formField: new FormFieldInput<string>({
+  generateFormField(pet: Pet | undefined): AbstractFormField[] {
+    let formFieldPhotoUrls: FormFieldInput<string>[] = [];
+    pet?.photoUrls.forEach((photoUrl) => {
+      formFieldPhotoUrls.push(
+        new FormFieldInput<string>({
           name: 'photoUrl',
           title: 'Photo Url',
           required: true,
-          value: '',
-        }),
-      }),
-    ];
+          value: photoUrl,
+        })
+      );
+    });
 
-    return formFields;
+    let formFieldTags: AbstractFormField[] = [];
+    pet?.tags?.forEach((tag) => {
+      formFieldTags.push(
+        new FormfieldObject({
+          name: 'tag',
+          title: 'Tag',
+          formFields: [
+            new FormFieldInput<number | undefined>({
+              name: 'id',
+              title: 'id',
+              required: true,
+              hidden: true,
+              value: tag.id,
+            }),
+            new FormFieldInput<string | undefined>({
+              name: 'name',
+              title: 'Name',
+              required: true,
+              value: tag.name,
+            }),
+          ],
+        })
+      );
+    });
+
+    return [
+      // new FormFieldInput<number>({
+      //   name: 'id',
+      //   title: 'id',
+      //   required: true,
+      //   hidden: true,
+      //   value: pet?.id || this.getRandomInt(1, 10000),
+      // }),
+      // new FormFieldInput<string>({
+      //   name: 'name',
+      //   title: 'Name',
+      //   required: true,
+      //   value: pet?.name || '',
+      // }),
+      // new FormfieldObject({
+      //   name: 'category',
+      //   title: 'Category',
+      //   formFields: [
+      //     new FormFieldInput<number>({
+      //       name: 'id',
+      //       title: 'id',
+      //       required: true,
+      //       hidden: true,
+      //       value: pet?.category?.id || this.getRandomInt(1, 10000),
+      //     }),
+      //     new FormFieldInput<string>({
+      //       name: 'name',
+      //       title: 'Name',
+      //       required: true,
+      //       value: pet?.category?.name || '',
+      //     }),
+      //   ],
+      // }),
+      // new FormFieldArray({
+      //   name: 'photoUrls',
+      //   title: 'Photo Urls',
+      //   uniqueValue: true,
+      //   formFieldModel: new FormFieldInput<string>({
+      //     name: 'photoUrl',
+      //     title: 'Photo Url',
+      //     required: true,
+      //     value: '',
+      //   }),
+      //   formFields: formFieldPhotoUrls,
+      // }),
+      new FormFieldArray({
+        name: 'tags',
+        title: 'Tags',
+        uniqueValue: true,
+        formFieldModel: new FormfieldObject({
+          name: 'tag',
+          title: 'Tag',
+          formFields: [
+            new FormFieldInput<number>({
+              name: 'id',
+              title: 'id',
+              required: true,
+              hidden: true,
+              value: this.getRandomInt(1, 10000),
+            }),
+            new FormFieldInput<string>({
+              name: 'name',
+              title: 'Name',
+              required: true,
+              value: '',
+            }),
+          ],
+        }),
+        formFields: formFieldTags,
+      }),
+      // new FormFieldSelect<Pet.StatusEnum>({
+      //   name: 'status',
+      //   title: 'Status',
+      //   required: true,
+      //   options: [
+      //     { value: 'available', viewValue: 'Available' },
+      //     { value: 'pending', viewValue: 'Pending' },
+      //     { value: 'sold', viewValue: 'Sold' },
+      //   ],
+      //   value: pet?.status || undefined,
+      // }),
+    ];
   }
+
+  // setformFields(pet: Pet): AbstractFormField[] {
+  //   // let photoUrls
+
+  //   let formFields: AbstractFormField[] = [
+  //     new FormFieldInput<number | undefined>({
+  //       name: 'id',
+  //       title: 'id',
+  //       required: true,
+  //       value: pet.id,
+  //     }),
+  //     new FormFieldInput<string>({
+  //       name: 'name',
+  //       title: 'Name',
+  //       required: true,
+  //       value: pet.name,
+  //     }),
+  //     new FormfieldObject({
+  //       name: 'category',
+  //       title: 'Category',
+  //       formFields: [
+  //         new FormFieldInput<number | undefined>({
+  //           name: 'id',
+  //           title: 'id',
+  //           required: true,
+  //           hidden: true,
+  //           value: pet.category?.id,
+  //         }),
+  //         new FormFieldInput<string | undefined>({
+  //           name: 'name',
+  //           title: 'Name',
+  //           required: true,
+  //           value: pet.category?.name,
+  //         }),
+  //       ],
+  //     }),
+  //     new FormFieldArray({
+  //       name: 'photoUrls',
+  //       title: 'Photo Urls',
+  //       uniqueValue: true,
+  //       formFieldModel: new FormFieldInput<string>({
+  //         name: 'photoUrl',
+  //         title: 'Photo Url',
+  //         required: true,
+  //         value: '',
+  //       }),
+  //     }),
+  //   ];
+
+  //   return formFields;
+  // }
 
   onSubmit(value: object) {
     this.apiService.petService.addPet(value as Pet).subscribe({

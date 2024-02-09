@@ -1,5 +1,7 @@
 <h1 class="form-title">{{ formTitle }}</h1>
 <div class="form-content">
+  @if(formFields) {
   <dyn-form [dynFormFields]="formFields" (submitValue)="onSubmit($event)">
   </dyn-form>
+  }
 </div>
