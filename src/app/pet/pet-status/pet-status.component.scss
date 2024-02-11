@@ -1,0 +1,41 @@
+table {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.custom-toolbar {
+  background-color: transparent !important;
+  //   margin: 0px;
+  padding: 0px;
+}
+
+.max-width-form-field {
+  max-width: 400px; /* Set your desired maximum width here */
+  width: 200px; /* Ensure it takes the full width of the parent container */
+  //   margin: auto; /* Center the form field horizontally if needed */
+  height: 78px;
+}
+
+td,
+th {
+  width: 25%;
+  max-width: 200px;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+}

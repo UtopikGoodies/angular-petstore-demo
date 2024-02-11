@@ -1,0 +1,16 @@
+<h1 class="form-title">{{ formTitle }}</h1>
+<div class="form-content">
+  @if(notFound){
+    <h1>Not found</h1>
+  }
+  @if(formFields) {
+  <dyn-form
+    [dynFormFields]="formFields"
+    [buttonDelete]="isAction(ActionType.Update)"
+    [buttonActionText]="action"
+    (deleteValue)="onDelete()"
+    (submitValue)="onSubmit($event)"
+  >
+  </dyn-form>
+  }
+</div>
