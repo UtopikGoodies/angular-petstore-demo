@@ -12,11 +12,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-
-interface Status {
-  value: 'available' | 'pending' | 'sold';
-  viewValue: string;
-}
+import { Pet } from '@utopikgoodies/swagger-petstore-client';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pet-status',
@@ -49,21 +46,17 @@ export class PetStatusComponent implements AfterViewInit {
   displayedColumns: string[] = [];
   resultsLength = 0;
 
-  statuses: Status[] = [
-    { value: 'available', viewValue: 'Available' },
-    { value: 'pending', viewValue: 'Pending' },
-    { value: 'sold', viewValue: 'Sold' },
-  ];
+  statuses!: Pet.StatusEnum;
 
-  selected = new FormControl(this.statuses[0].value);
+  selected = new FormControl(Pet.StatusEnum.Available);
 
-  constructor(public dialog: MatDialog, private apiService: ApiService) {
-    this.loadData(
-      this.statuses.find((status) => status.value === this.selected.value)
-    );
+  constructor(
+    private router: Router,
+    private apiService: ApiService
+  ) {
+    this.loadData(this.selected.value as Pet.StatusEnum);
     this.selected.valueChanges.subscribe({
-      next: (value) =>
-        this.loadData(this.statuses.find((status) => status.value === value)),
+      next: (value) => this.loadData(value as Pet.StatusEnum),
       error: (err) => console.error(err),
     });
   }
@@ -73,9 +66,8 @@ export class PetStatusComponent implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  loadData(status: Status | undefined) {
-    // Call the API service to retrieve pet data based on the provided status.
-    this.apiService.petService.findPetsByStatus(status?.value).subscribe({
+  loadData(status: Pet.StatusEnum | undefined) {
+    this.apiService.petService.findPetsByStatus(status).subscribe({
       next: (value) => {
         this.dataSource.data = value.map((pet) => {
           return {
@@ -89,18 +81,12 @@ export class PetStatusComponent implements AfterViewInit {
       },
       error: (error) => console.error(error),
       complete: () => {
-        // After data is loaded, update the displayed columns for the table.
         console.info('Pets data loaded.');
-        // Get the keys (column names) from the first item in the data source.
         this.displayedColumns = Object.keys(this.dataSource.data[0]);
       },
     });
   }
 
-  // applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
-  // }
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -110,14 +96,17 @@ export class PetStatusComponent implements AfterViewInit {
     }
   }
 
-
   isRequired<T>(property: T | null): boolean {
     return property !== null;
   }
 
   getRandomInt(min: number, max: number) {
-    min = Math.ceil(min); // Round up the minimum value
-    max = Math.floor(max); // Round down the maximum value
-    return Math.floor(Math.random() * (max - min + 1)) + min; // Inclusive of min and max
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  redirect(value: number) {
+    this.router.navigate(['/', 'pet', value]);
   }
 }

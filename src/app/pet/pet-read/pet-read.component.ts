@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { FormPetCruComponent } from '../form-pet-cru/form-pet-cru.component';
+import {
+  Action,
+  FormPetCruComponent,
+} from '../form-pet-cru/form-pet-cru.component';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -12,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 export class PetReadComponent {
   pageTitle = 'Pet';
   petId!: number;
+  action = Action.Update;
 
   constructor(private route: ActivatedRoute) {}
 

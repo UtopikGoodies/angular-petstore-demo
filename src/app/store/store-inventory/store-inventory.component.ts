@@ -24,7 +24,7 @@ export class StoreInventoryComponent implements OnInit {
       error: (error) => console.error(error),
       complete: () => {
         console.info("Inventory data loaded.");
-        console.debug(`${JSON.stringify(this.dataSource)}`); // Use JSON.stringify to log the dataSource as an object
+        // console.debug(`${JSON.stringify(this.dataSource)}`); // Use JSON.stringify to log the dataSource as an object
       }
     })
   }
