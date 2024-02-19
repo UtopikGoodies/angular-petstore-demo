@@ -136,7 +136,7 @@ export class FormPetCruComponent implements OnInit {
           name: 'photoUrl',
           title: 'Photo Url',
           required: true,
-          value: '',
+          value: ''
         }),
         formFields: formFieldPhotoUrls,
       }),
