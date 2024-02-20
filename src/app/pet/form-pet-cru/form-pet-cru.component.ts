@@ -2,9 +2,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractFormField,
   DynFormModule,
+  DynamicFormfieldLabel,
   FormFieldArray,
   FormFieldInput,
   FormFieldSelect,
+  FormfieldLabel,
   FormfieldObject,
 } from '../../../../lib/angular-components/projects/dynamic-form/src/lib';
 import { MatButtonModule } from '@angular/material/button';
@@ -96,6 +98,11 @@ export class FormPetCruComponent implements OnInit {
     });
 
     return [
+      new FormfieldLabel({
+        name:'id',
+        title: 'Id',
+        value: pet?.id?.toString() as string
+      }),
       new FormFieldInput<number>({
         name: 'id',
         title: 'id',
