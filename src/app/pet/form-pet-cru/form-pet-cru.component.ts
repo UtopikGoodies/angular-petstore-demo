@@ -6,6 +6,7 @@ import {
   FormFieldArray,
   FormFieldInput,
   FormFieldSelect,
+  Option,
   FormfieldLabel,
   FormfieldObject,
 } from '../../../../lib/angular-components/projects/dynamic-form/src/lib';
@@ -36,7 +37,10 @@ export class FormPetCruComponent implements OnInit {
   ActionType = Action;
   notFound = false;
 
-  constructor(private router: Router, private apiService: ApiService) {
+  constructor(
+    private router: Router,
+    private apiService: ApiService,
+  ) {
     // this.formFields = this.generateFormField(this.pet);
   }
 
@@ -68,7 +72,7 @@ export class FormPetCruComponent implements OnInit {
           title: 'Photo Url',
           required: true,
           value: photoUrl,
-        })
+        }),
       );
     });
 
@@ -93,15 +97,15 @@ export class FormPetCruComponent implements OnInit {
               value: tag.name,
             }),
           ],
-        })
+        }),
       );
     });
 
     return [
       new FormfieldLabel({
-        name:'id',
+        name: 'id',
         title: 'Id',
-        value: pet?.id?.toString() as string
+        value: pet?.id?.toString() as string,
       }),
       new FormFieldInput<number>({
         name: 'id',
@@ -143,7 +147,7 @@ export class FormPetCruComponent implements OnInit {
           name: 'photoUrl',
           title: 'Photo Url',
           required: true,
-          value: ''
+          value: '',
         }),
         formFields: formFieldPhotoUrls,
       }),
@@ -177,10 +181,10 @@ export class FormPetCruComponent implements OnInit {
         title: 'Status',
         required: true,
         options: [
-          { value: 'available', viewValue: 'Available' },
-          { value: 'pending', viewValue: 'Pending' },
-          { value: 'sold', viewValue: 'Sold' },
-        ],
+          { value: Pet.StatusEnum.Available, viewValue: 'Available' },
+          { value: Pet.StatusEnum.Pending, viewValue: 'Pending' },
+          { value: Pet.StatusEnum.Sold, viewValue: 'Sold' },
+        ] as Option<Pet.StatusEnum>[],
         value: pet?.status || undefined,
       }),
     ];
