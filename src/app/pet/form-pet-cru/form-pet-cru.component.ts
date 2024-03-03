@@ -65,19 +65,54 @@ export class FormPetCruComponent implements OnInit {
 
   generateFormField(pet: Pet | undefined): AbstractFormField[] {
     let formFieldPhotoUrls: FormFieldInput<string>[] = [];
-    pet?.photoUrls.forEach((photoUrl) => {
+    if (pet?.photoUrls) {
+      pet?.photoUrls.forEach((photoUrl) => {
+        formFieldPhotoUrls.push(
+          new FormFieldInput<string>({
+            name: 'photoUrl',
+            title: 'Photo Url',
+            required: true,
+            value: photoUrl,
+          }),
+        );
+      });
+    } else {
       formFieldPhotoUrls.push(
         new FormFieldInput<string>({
           name: 'photoUrl',
           title: 'Photo Url',
           required: true,
-          value: photoUrl,
+          value: '',
         }),
       );
-    });
+    }
 
     let formFieldTags: AbstractFormField[] = [];
-    pet?.tags?.forEach((tag) => {
+    if (pet?.tags) {
+      pet?.tags?.forEach((tag) => {
+        formFieldTags.push(
+          new FormfieldObject({
+            name: 'tag',
+            title: 'Tag',
+            formFields: [
+              new FormFieldInput<number | undefined>({
+                name: 'id',
+                title: 'id',
+                required: true,
+                hidden: true,
+                value: tag.id,
+              }),
+              new FormFieldInput<string | undefined>({
+                name: 'name',
+                title: 'Name',
+                required: true,
+                value: tag.name,
+              }),
+            ],
+          }),
+        );
+      });
+    } else {
       formFieldTags.push(
         new FormfieldObject({
           name: 'tag',
@@ -88,31 +123,25 @@ export class FormPetCruComponent implements OnInit {
               title: 'id',
               required: true,
               hidden: true,
-              value: tag.id,
+              value: this.getRandomInt(1, 10000),
             }),
             new FormFieldInput<string | undefined>({
               name: 'name',
               title: 'Name',
               required: true,
-              value: tag.name,
+              value: '',
             }),
           ],
         }),
       );
-    });
+    }
 
     return [
       new FormfieldLabel({
         name: 'id',
         title: 'Id',
-        value: pet?.id?.toString() as string,
-      }),
-      new FormFieldInput<number>({
-        name: 'id',
-        title: 'id',
-        required: true,
-        hidden: true,
-        value: pet?.id || this.getRandomInt(1, 10000),
+        hidden: this.action == Action.Create,
+        value: pet?.id || this.getRandomInt(1, 10000)
       }),
       new FormFieldInput<string>({
         name: 'name',
@@ -143,37 +172,12 @@ export class FormPetCruComponent implements OnInit {
         name: 'photoUrls',
         title: 'Photo Urls',
         distinct: true,
-        formFieldModel: new FormFieldInput<string>({
-          name: 'photoUrl',
-          title: 'Photo Url',
-          required: true,
-          value: '',
-        }),
         formFields: formFieldPhotoUrls,
       }),
       new FormFieldArray({
         name: 'tags',
         title: 'Tags',
         distinct: true,
-        formFieldModel: new FormfieldObject({
-          name: 'tag',
-          title: 'Tag',
-          formFields: [
-            new FormFieldInput<number>({
-              name: 'id',
-              title: 'id',
-              required: true,
-              hidden: true,
-              value: this.getRandomInt(1, 10000),
-            }),
-            new FormFieldInput<string>({
-              name: 'name',
-              title: 'Name',
-              required: true,
-              value: '',
-            }),
-          ],
-        }),
         formFields: formFieldTags,
       }),
       new FormFieldSelect<Pet.StatusEnum>({
