@@ -14,6 +14,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { Pet } from '@utopikgoodies/swagger-petstore-client';
 import { Router } from '@angular/router';
+import { DynamicFormService } from '../../dynamic-form.service';
 
 @Component({
   selector: 'app-pet-status',
@@ -41,6 +42,8 @@ export class PetStatusComponent implements AfterViewInit {
 
   pageTitle = 'Pet';
 
+  pets: Pet[] = [];
+
   dataSource: MatTableDataSource<{ [key: string]: unknown }> =
     new MatTableDataSource();
   displayedColumns: string[] = [];
@@ -52,9 +55,10 @@ export class PetStatusComponent implements AfterViewInit {
 
   constructor(
     private router: Router,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private dynamicFormService: DynamicFormService
   ) {
-    this.loadData(this.selected.value as Pet.StatusEnum);
+    this.loadData();
     this.selected.valueChanges.subscribe({
       next: (value) => this.loadData(value as Pet.StatusEnum),
       error: (err) => console.error(err),
@@ -66,9 +70,10 @@ export class PetStatusComponent implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  loadData(status: Pet.StatusEnum | undefined) {
+  loadData(status: Pet.StatusEnum | undefined = this.selected.value as Pet.StatusEnum) {
     this.apiService.petService.findPetsByStatus(status).subscribe({
       next: (value) => {
+        this.pets = value;
         this.dataSource.data = value.map((pet) => {
           return {
             ...pet,
@@ -106,7 +111,16 @@ export class PetStatusComponent implements AfterViewInit {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  redirect(value: number) {
-    this.router.navigate(['/', 'pet', value]);
+  openPetDialog(petId: string) {
+    const pet = this.pets.find(pet => pet.id === Number(petId));
+    if (pet) {
+      this.dynamicFormService.openPetDialog(pet).subscribe({
+        next: (value) => console.debug(value),
+        error: (error) => console.error(error),
+        complete: () => {
+          this.loadData();
+        },
+      });
+    }
   }
 }
